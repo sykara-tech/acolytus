@@ -31,6 +31,7 @@ const titles = {
 /* ——— Init ——— */
 document.addEventListener("DOMContentLoaded", () => {
   initFirebase();
+  setupUppercase();
   setupDateMask();
   setupLogin();
   setupNavigation();
@@ -39,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupLogout();
   setupUsersUI();
   setupAvisosUI();
+  setupMobileMenu();
 
   setTimeout(() => {
     document.getElementById("loading").classList.add("hidden");
@@ -106,6 +108,25 @@ function normalizeNasc(str) {
 function formatNascDisplay(digits) {
   if (!digits || digits.length !== 8) return digits || "—";
   return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+}
+
+
+/* Força maiúsculas em todos os campos de texto */
+function setupUppercase() {
+  document.addEventListener("input", (e) => {
+    const el = e.target;
+    if (!(el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)) return;
+    if (el.type === "password" || el.type === "email" || el.type === "url" || el.type === "file" || el.type === "checkbox" || el.type === "radio" || el.type === "hidden") return;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const upper = el.value.toUpperCase();
+    if (el.value !== upper) {
+      el.value = upper;
+      if (start != null && end != null) {
+        try { el.setSelectionRange(start, end); } catch (_) {}
+      }
+    }
+  });
 }
 
 /* Máscara DD/MM/AAAA */
@@ -445,6 +466,42 @@ window.deleteAviso = async function (id) {
   await db.ref("avisos/" + id).remove();
   loadAvisos();
 };
+
+
+/* Menu mobile */
+function setupMobileMenu() {
+  const btn = document.getElementById("btn-menu");
+  const sidebar = document.querySelector(".sidebar");
+  const overlay = document.getElementById("sidebar-overlay");
+  if (!btn || !sidebar) return;
+
+  function openMenu() {
+    sidebar.classList.add("open");
+    overlay?.classList.remove("hidden");
+    document.body.classList.add("menu-open");
+  }
+  function closeMenu() {
+    sidebar.classList.remove("open");
+    overlay?.classList.add("hidden");
+    document.body.classList.remove("menu-open");
+  }
+
+  btn.addEventListener("click", () => {
+    if (sidebar.classList.contains("open")) closeMenu();
+    else openMenu();
+  });
+  overlay?.addEventListener("click", closeMenu);
+
+  document.querySelectorAll(".nav-item").forEach((item) => {
+    item.addEventListener("click", () => {
+      if (window.matchMedia("(max-width: 900px)").matches) closeMenu();
+    });
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 900) closeMenu();
+  });
+}
 
 /* ——— Utils ——— */
 function formatDate(ts) {
