@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupAvisosUI();
   setupCalendarUI();
   setupMobileMenu();
+  renderCalendar();
 
   setTimeout(() => {
     document.getElementById("loading").classList.add("hidden");
@@ -61,12 +62,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initFirebase() {
   try {
-    firebase.initializeApp(firebaseConfig);
+    if (!window.firebase || !firebase.database) {
+      setFirebaseStatus("Firebase não carregou. Verifique sua conexão com a internet.", "error");
+      return;
+    }
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     db = firebase.database();
+
+    // O estado conectado/desconectado ajuda a diferenciar falha de rede de falha nas regras.
+    db.ref(".info/connected").on("value", (snap) => {
+      setFirebaseStatus(
+        snap.val() === true
+          ? "Conectado ao Firebase. Os dados podem ser sincronizados."
+          : "Sem conexão com o Firebase. Verifique a internet e as regras do Realtime Database.",
+        snap.val() === true ? "ok" : "warning"
+      );
+    });
     ensureAdminExists();
   } catch (e) {
-    console.warn("Firebase:", e);
+    console.error("Firebase:", e);
+    setFirebaseStatus("Não foi possível iniciar o Firebase: " + (e.message || e), "error");
   }
+}
+
+function setFirebaseStatus(message, state = "warning") {
+  const el = document.getElementById("firebase-status");
+  if (!el) return;
+  el.textContent = message;
+  el.dataset.state = state;
+  el.classList.remove("hidden");
 }
 
 async function ensureAdminExists() {
@@ -598,7 +622,14 @@ function setupCalendarUI() {
 
   document.getElementById("form-cal")?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (!db || currentUser?.role !== "admin") return;
+    if (!db) {
+      alert("O Firebase não está disponível. O evento não foi salvo. Verifique a conexão e a configuração do Realtime Database.");
+      return;
+    }
+    if (currentUser?.role !== "admin") {
+      alert("Somente o administrador pode gerenciar o calendário.");
+      return;
+    }
 
     const id = document.getElementById("cal-event-id").value;
     const titulo = document.getElementById("cal-titulo").value.trim();
@@ -611,6 +642,18 @@ function setupCalendarUI() {
     if (!titulo || !inicio) {
       alert("Preencha título e data de início.");
       return;
+    }
+    const parsedStart = new Date(inicio + "T12:00:00");
+    if (Number.isNaN(parsedStart.getTime()) || toYMD(parsedStart) !== inicio) {
+      alert("A data de início é inválida.");
+      return;
+    }
+    if (fim) {
+      const parsedEnd = new Date(fim + "T12:00:00");
+      if (Number.isNaN(parsedEnd.getTime()) || toYMD(parsedEnd) !== fim) {
+        alert("A data final é inválida.");
+        return;
+      }
     }
     if (fim < inicio) {
       alert("A data fim não pode ser anterior à data início.");
@@ -628,6 +671,8 @@ function setupCalendarUI() {
       autor: currentUser.nome
     };
 
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Salvando..."; }
     try {
       if (id) {
         await db.ref("calendario/" + id).update(data);
@@ -636,10 +681,15 @@ function setupCalendarUI() {
         await db.ref("calendario").push(data);
       }
       document.getElementById("modal-cal").classList.add("hidden");
+      setFirebaseStatus("Evento salvo no Firebase com sucesso.", "ok");
       await loadCalendar();
       if (calSelectedDate) showDayDetail(calSelectedDate);
     } catch (err) {
-      alert("Erro: " + err.message);
+      console.error("Erro ao salvar evento do calendário:", err);
+      setFirebaseStatus("Falha ao salvar no Firebase: " + (err.message || err) + ". Confira as regras de leitura/gravação.", "error");
+      alert("Não foi possível salvar o evento no Firebase.\n\n" + (err.message || err) + "\n\nConfira as regras do Realtime Database.");
+    } finally {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Salvar"; }
     }
   });
 }
@@ -689,15 +739,21 @@ window.deleteCalEventFromList = async function (id) {
 
 async function loadCalendar() {
   if (!db) {
+    calEvents = [];
     renderCalendar();
+    setFirebaseStatus("Calendário exibido sem sincronização: Firebase indisponível.", "warning");
     return;
   }
   try {
     const snap = await db.ref("calendario").once("value");
     const data = snap.val() || {};
-    calEvents = Object.entries(data).map(([id, e]) => ({ id, ...e }));
+    calEvents = Object.entries(data)
+      .filter(([, event]) => event && typeof event === "object")
+      .map(([id, event]) => ({ id, ...event }));
+    setFirebaseStatus("Calendário sincronizado. " + calEvents.length + " evento(s) carregado(s).", "ok");
   } catch (e) {
-    console.warn("Calendário:", e);
+    console.error("Erro ao carregar calendário:", e);
+    setFirebaseStatus("Não foi possível ler os eventos do Firebase: " + (e.message || e) + ". Confira as regras de leitura.", "error");
     calEvents = [];
   }
   renderCalendar();

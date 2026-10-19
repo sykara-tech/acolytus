@@ -878,3 +878,28 @@ img, svg, iframe, video {
     padding-bottom: calc(24px + env(safe-area-inset-bottom));
   }
 }
+
+
+/* Estado de sincronização do Firebase */
+.firebase-status {
+  margin: 0 0 14px;
+  padding: 10px 13px;
+  border: 1px solid var(--border, #514047);
+  border-left: 4px solid #c9a227;
+  border-radius: 8px;
+  color: var(--text, #f5f0e6);
+  background: rgba(201, 162, 39, .08);
+  font-size: .9rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.firebase-status[data-state="ok"] { border-left-color: #4a9b69; }
+.firebase-status[data-state="error"] { border-left-color: #c94b55; }
+.firebase-status[data-state="warning"] { border-left-color: #c9a227; }
+button:disabled { opacity: .65; cursor: wait; }
+@media (max-width: 560px) {
+  .cal-day { padding: 3px 2px; border-radius: 6px; }
+  .cal-day-num { font-size: .75rem; }
+  .cal-event-chip { font-size: .55rem; }
+  .cal-grid, .cal-grid-head { gap: 2px; }
+}
