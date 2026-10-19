@@ -124,47 +124,144 @@
           </div>
         </div>
 
+        <!-- CALENDÁRIO LITÚRGICO -->
+        <div class="card calendar-card anim-fade-up" style="--d:0.05s">
+          <div class="section-head">
+            <h2 class="card-title">Calendário Litúrgico</h2>
+            <button class="btn btn-primary admin-only hidden" id="btn-add-cal-event" type="button">Adicionar evento</button>
+          </div>
+
+          <div class="cal-toolbar">
+            <button type="button" class="btn btn-outline btn-sm" id="cal-prev" aria-label="Mês anterior">‹</button>
+            <h3 id="cal-month-label" class="cal-month-label">—</h3>
+            <button type="button" class="btn btn-outline btn-sm" id="cal-next" aria-label="Próximo mês">›</button>
+            <button type="button" class="btn btn-outline btn-sm" id="cal-today">Hoje</button>
+          </div>
+
+          <div class="cal-grid-head">
+            <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+          </div>
+          <div id="cal-grid" class="cal-grid"></div>
+
+          <div class="cal-legend">
+            <h4>Legenda</h4>
+            <div class="cal-legend-items">
+              <span class="cal-leg"><i style="background:#c9a227"></i> Solenidade</span>
+              <span class="cal-leg"><i style="background:#5b8c5a"></i> Festa</span>
+              <span class="cal-leg"><i style="background:#6b8cae"></i> Memória</span>
+              <span class="cal-leg"><i style="background:#8b6b4a"></i> Comemoração</span>
+              <span class="cal-leg"><i style="background:#3d6b8a"></i> Próprio da comunidade</span>
+              <span class="cal-leg"><i style="background:#7a2a32"></i> Tempo litúrgico</span>
+              <span class="cal-leg"><i style="background:#ffffff;border:1px solid #999"></i> Branco</span>
+              <span class="cal-leg"><i style="background:#c41e3a"></i> Vermelho</span>
+              <span class="cal-leg"><i style="background:#4a7c59"></i> Verde</span>
+              <span class="cal-leg"><i style="background:#6b3a8a"></i> Roxo</span>
+              <span class="cal-leg"><i style="background:#e8a0bf"></i> Rosa</span>
+            </div>
+          </div>
+
+          <div id="cal-day-detail" class="cal-day-detail hidden">
+            <h4 id="cal-day-title">—</h4>
+            <ul id="cal-day-events"></ul>
+          </div>
+        </div>
+
         <div class="cards-grid">
-          <button class="card nav-card anim-fade-up" style="--d:0.05s" data-goto="formulario">
+          <button class="card nav-card anim-fade-up" style="--d:0.1s" data-goto="formulario">
             <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span>
             <h3>Formulário SAL</h3>
             <p>Sistema de Acompanhamento litúrgico</p>
           </button>
-          <button class="card nav-card anim-fade-up" style="--d:0.1s" data-goto="escalas">
+          <button class="card nav-card anim-fade-up" style="--d:0.15s" data-goto="escalas">
             <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
             <h3>Escalas</h3>
             <p>Missas e serviços</p>
           </button>
-          <button class="card nav-card anim-fade-up" style="--d:0.15s" data-goto="atas">
+          <button class="card nav-card anim-fade-up" style="--d:0.2s" data-goto="atas">
             <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span>
             <h3>Atas</h3>
             <p>Reuniões e registros</p>
           </button>
-          <button class="card nav-card anim-fade-up" style="--d:0.2s" data-goto="liturgia">
+          <button class="card nav-card anim-fade-up" style="--d:0.25s" data-goto="liturgia">
             <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></span>
             <h3>Liturgia</h3>
             <p>Materiais litúrgicos</p>
           </button>
-          <button class="card nav-card anim-fade-up" style="--d:0.25s" data-goto="financas">
+          <button class="card nav-card anim-fade-up" style="--d:0.3s" data-goto="financas">
             <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
             <h3>Finanças</h3>
             <p>Documentos financeiros</p>
           </button>
-          <button class="card nav-card anim-fade-up" style="--d:0.3s" data-goto="diversos">
+          <button class="card nav-card anim-fade-up" style="--d:0.35s" data-goto="diversos">
             <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></span>
             <h3>Diversos</h3>
             <p>Outros documentos</p>
           </button>
-          <button class="card nav-card anim-fade-up" style="--d:0.35s" data-goto="avisos">
+          <button class="card nav-card anim-fade-up" style="--d:0.4s" data-goto="avisos">
             <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></span>
             <h3>Avisos</h3>
             <p>Comunicados da pastoral</p>
           </button>
         </div>
 
-        <div class="card verse-card anim-fade-up" style="--d:0.4s">
+        <div class="card verse-card anim-fade-up" style="--d:0.45s">
           <blockquote>“Servi ao Senhor com alegria; apresentai-vos a ele com cânticos.”</blockquote>
           <cite>— Salmo 100,2</cite>
+        </div>
+
+        <!-- Modal calendário (admin) -->
+        <div id="modal-cal" class="modal hidden">
+          <div class="modal-content">
+            <h3 id="modal-cal-title">Adicionar evento</h3>
+            <form id="form-cal">
+              <input type="hidden" id="cal-event-id" />
+              <div class="form-group">
+                <label for="cal-titulo">Título</label>
+                <input type="text" id="cal-titulo" required placeholder="Ex.: SOLENIDADE DE TODOS OS SANTOS" />
+              </div>
+              <div class="form-group">
+                <label for="cal-tipo">Tipo</label>
+                <select id="cal-tipo" required>
+                  <option value="solenidade">Solenidade</option>
+                  <option value="festa">Festa</option>
+                  <option value="memoria">Memória</option>
+                  <option value="comemoracao">Comemoração</option>
+                  <option value="proprio">Próprio da comunidade</option>
+                  <option value="tempo">Tempo litúrgico</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="cal-inicio">Data início</label>
+                  <input type="date" id="cal-inicio" required />
+                </div>
+                <div class="form-group">
+                  <label for="cal-fim">Data fim <span class="hint">(opcional)</span></label>
+                  <input type="date" id="cal-fim" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="cal-cor">Cor litúrgica</label>
+                <select id="cal-cor" required>
+                  <option value="branco">Branco</option>
+                  <option value="vermelho">Vermelho</option>
+                  <option value="verde">Verde</option>
+                  <option value="roxo">Roxo</option>
+                  <option value="rosa">Rosa</option>
+                  <option value="dourado">Dourado (solenidade)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="cal-obs">Observação <span class="hint">(opcional)</span></label>
+                <textarea id="cal-obs" rows="2" placeholder="Notas adicionais"></textarea>
+              </div>
+              <div class="modal-actions">
+                <button type="button" class="btn btn-outline" id="btn-cancel-cal">Cancelar</button>
+                <button type="button" class="btn btn-danger hidden" id="btn-delete-cal">Excluir</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+              </div>
+            </form>
+          </div>
         </div>
       </section>
 

@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupLogout();
   setupUsersUI();
   setupAvisosUI();
+  setupCalendarUI();
   setupMobileMenu();
 
   setTimeout(() => {
@@ -241,6 +242,7 @@ function showApp() {
   });
 
   loadAvisos();
+  loadCalendar();
   if (isAdmin) loadUsers();
 }
 
@@ -280,6 +282,7 @@ function navigateTo(section) {
 
   if (section === "usuarios") loadUsers();
   if (section === "avisos") loadAvisos();
+  if (section === "inicio") loadCalendar();
 }
 
 window.navigateTo = navigateTo;
@@ -501,6 +504,367 @@ function setupMobileMenu() {
   window.addEventListener("resize", () => {
     if (window.innerWidth > 900) closeMenu();
   });
+}
+
+/* ——— Calendário litúrgico ——— */
+const CAL_COLORS = {
+  branco: { hex: "#f5f0e6", label: "Branco" },
+  vermelho: { hex: "#c41e3a", label: "Vermelho" },
+  verde: { hex: "#4a7c59", label: "Verde" },
+  roxo: { hex: "#6b3a8a", label: "Roxo" },
+  rosa: { hex: "#e8a0bf", label: "Rosa" },
+  dourado: { hex: "#c9a227", label: "Dourado" }
+};
+
+const CAL_TIPO_LABEL = {
+  solenidade: "Solenidade",
+  festa: "Festa",
+  memoria: "Memória",
+  comemoracao: "Comemoração",
+  proprio: "Próprio da comunidade",
+  tempo: "Tempo litúrgico"
+};
+
+const CAL_TIPO_RANK = {
+  solenidade: 1,
+  festa: 2,
+  memoria: 3,
+  comemoracao: 4,
+  proprio: 5,
+  tempo: 6
+};
+
+const CAL_TIPO_DEFAULT_COR = {
+  solenidade: "dourado",
+  festa: "branco",
+  memoria: "branco",
+  comemoracao: "branco",
+  proprio: "branco",
+  tempo: "verde"
+};
+
+let calViewYear = new Date().getFullYear();
+let calViewMonth = new Date().getMonth(); // 0-11
+let calEvents = [];
+let calSelectedDate = null;
+
+function setupCalendarUI() {
+  document.getElementById("cal-prev")?.addEventListener("click", () => {
+    calViewMonth--;
+    if (calViewMonth < 0) {
+      calViewMonth = 11;
+      calViewYear--;
+    }
+    renderCalendar();
+  });
+  document.getElementById("cal-next")?.addEventListener("click", () => {
+    calViewMonth++;
+    if (calViewMonth > 11) {
+      calViewMonth = 0;
+      calViewYear++;
+    }
+    renderCalendar();
+  });
+  document.getElementById("cal-today")?.addEventListener("click", () => {
+    const now = new Date();
+    calViewYear = now.getFullYear();
+    calViewMonth = now.getMonth();
+    calSelectedDate = toYMD(now);
+    renderCalendar();
+    showDayDetail(calSelectedDate);
+  });
+
+  document.getElementById("btn-add-cal-event")?.addEventListener("click", () => openCalModal());
+  document.getElementById("btn-cancel-cal")?.addEventListener("click", () => {
+    document.getElementById("modal-cal").classList.add("hidden");
+  });
+  document.getElementById("btn-delete-cal")?.addEventListener("click", async () => {
+    const id = document.getElementById("cal-event-id").value;
+    if (!id || !confirm("Excluir este evento?")) return;
+    if (!db) return;
+    try {
+      await db.ref("calendario/" + id).remove();
+      document.getElementById("modal-cal").classList.add("hidden");
+      await loadCalendar();
+    } catch (err) {
+      alert("Erro: " + err.message);
+    }
+  });
+
+  document.getElementById("cal-tipo")?.addEventListener("change", (e) => {
+    const def = CAL_TIPO_DEFAULT_COR[e.target.value];
+    if (def) document.getElementById("cal-cor").value = def;
+  });
+
+  document.getElementById("form-cal")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!db || currentUser?.role !== "admin") return;
+
+    const id = document.getElementById("cal-event-id").value;
+    const titulo = document.getElementById("cal-titulo").value.trim();
+    const tipo = document.getElementById("cal-tipo").value;
+    const inicio = document.getElementById("cal-inicio").value;
+    const fim = document.getElementById("cal-fim").value || inicio;
+    const cor = document.getElementById("cal-cor").value;
+    const obs = document.getElementById("cal-obs").value.trim();
+
+    if (!titulo || !inicio) {
+      alert("Preencha título e data de início.");
+      return;
+    }
+    if (fim < inicio) {
+      alert("A data fim não pode ser anterior à data início.");
+      return;
+    }
+
+    const data = {
+      titulo,
+      tipo,
+      inicio,
+      fim,
+      cor,
+      obs,
+      updatedAt: Date.now(),
+      autor: currentUser.nome
+    };
+
+    try {
+      if (id) {
+        await db.ref("calendario/" + id).update(data);
+      } else {
+        data.createdAt = Date.now();
+        await db.ref("calendario").push(data);
+      }
+      document.getElementById("modal-cal").classList.add("hidden");
+      await loadCalendar();
+      if (calSelectedDate) showDayDetail(calSelectedDate);
+    } catch (err) {
+      alert("Erro: " + err.message);
+    }
+  });
+}
+
+function openCalModal(event = null) {
+  const modal = document.getElementById("modal-cal");
+  const form = document.getElementById("form-cal");
+  form.reset();
+  document.getElementById("cal-event-id").value = event?.id || "";
+  document.getElementById("modal-cal-title").textContent = event ? "Editar evento" : "Adicionar evento";
+  document.getElementById("btn-delete-cal").classList.toggle("hidden", !event);
+
+  if (event) {
+    document.getElementById("cal-titulo").value = event.titulo || "";
+    document.getElementById("cal-tipo").value = event.tipo || "festa";
+    document.getElementById("cal-inicio").value = event.inicio || "";
+    document.getElementById("cal-fim").value = event.fim && event.fim !== event.inicio ? event.fim : "";
+    document.getElementById("cal-cor").value = event.cor || "branco";
+    document.getElementById("cal-obs").value = event.obs || "";
+  } else {
+    const tipo = "festa";
+    document.getElementById("cal-tipo").value = tipo;
+    document.getElementById("cal-cor").value = CAL_TIPO_DEFAULT_COR[tipo];
+    if (calSelectedDate) {
+      document.getElementById("cal-inicio").value = calSelectedDate;
+    }
+  }
+  modal.classList.remove("hidden");
+}
+
+window.editCalEvent = function (id) {
+  const ev = calEvents.find((e) => e.id === id);
+  if (ev) openCalModal(ev);
+};
+
+window.deleteCalEventFromList = async function (id) {
+  if (!confirm("Excluir este evento?")) return;
+  if (!db) return;
+  try {
+    await db.ref("calendario/" + id).remove();
+    await loadCalendar();
+    if (calSelectedDate) showDayDetail(calSelectedDate);
+  } catch (err) {
+    alert("Erro: " + err.message);
+  }
+};
+
+async function loadCalendar() {
+  if (!db) {
+    renderCalendar();
+    return;
+  }
+  try {
+    const snap = await db.ref("calendario").once("value");
+    const data = snap.val() || {};
+    calEvents = Object.entries(data).map(([id, e]) => ({ id, ...e }));
+  } catch (e) {
+    console.warn("Calendário:", e);
+    calEvents = [];
+  }
+  renderCalendar();
+  if (calSelectedDate) showDayDetail(calSelectedDate);
+}
+
+function toYMD(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function eventsOnDate(ymd) {
+  return calEvents
+    .filter((e) => {
+      const start = e.inicio;
+      const end = e.fim || e.inicio;
+      return start && end && ymd >= start && ymd <= end;
+    })
+    .sort((a, b) => {
+      const ra = CAL_TIPO_RANK[a.tipo] ?? 99;
+      const rb = CAL_TIPO_RANK[b.tipo] ?? 99;
+      if (ra !== rb) return ra - rb;
+      return (a.titulo || "").localeCompare(b.titulo || "", "pt-BR");
+    });
+}
+
+function renderCalendar() {
+  const grid = document.getElementById("cal-grid");
+  const label = document.getElementById("cal-month-label");
+  if (!grid || !label) return;
+
+  const monthNames = [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+  ];
+  label.textContent = `${monthNames[calViewMonth]} ${calViewYear}`;
+
+  const first = new Date(calViewYear, calViewMonth, 1);
+  const startDow = first.getDay(); // 0=Dom
+  const daysInMonth = new Date(calViewYear, calViewMonth + 1, 0).getDate();
+  const prevDays = new Date(calViewYear, calViewMonth, 0).getDate();
+
+  const todayYMD = toYMD(new Date());
+  let html = "";
+
+  // Dias do mês anterior
+  for (let i = startDow - 1; i >= 0; i--) {
+    const day = prevDays - i;
+    const m = calViewMonth === 0 ? 11 : calViewMonth - 1;
+    const y = calViewMonth === 0 ? calViewYear - 1 : calViewYear;
+    const ymd = `${y}-${String(m + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    html += calDayCell(day, ymd, true, todayYMD);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const ymd = `${calViewYear}-${String(calViewMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    html += calDayCell(day, ymd, false, todayYMD);
+  }
+
+  // Preencher restante da grade (até 42 células = 6 semanas)
+  const totalSoFar = startDow + daysInMonth;
+  const remaining = totalSoFar % 7 === 0 ? 0 : 7 - (totalSoFar % 7);
+  for (let day = 1; day <= remaining; day++) {
+    const m = calViewMonth === 11 ? 0 : calViewMonth + 1;
+    const y = calViewMonth === 11 ? calViewYear + 1 : calViewYear;
+    const ymd = `${y}-${String(m + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    html += calDayCell(day, ymd, true, todayYMD);
+  }
+
+  grid.innerHTML = html;
+
+  grid.querySelectorAll(".cal-day").forEach((el) => {
+    el.addEventListener("click", () => {
+      calSelectedDate = el.dataset.date;
+      renderCalendar();
+      showDayDetail(calSelectedDate);
+    });
+  });
+}
+
+function calDayCell(day, ymd, other, todayYMD) {
+  const evs = eventsOnDate(ymd);
+  const isToday = ymd === todayYMD;
+  const isSel = ymd === calSelectedDate;
+  let cls = "cal-day";
+  if (other) cls += " other-month";
+  if (isToday) cls += " today";
+  if (isSel) cls += " selected";
+
+  const maxChips = 2;
+  const chips = evs.slice(0, maxChips).map((e) => {
+    const hex = CAL_COLORS[e.cor]?.hex || "#c9a227";
+    return `<span class="cal-event-chip" style="background:${hex}" title="${escapeHtml(e.titulo)}">${escapeHtml(e.titulo)}</span>`;
+  }).join("");
+  const extra = evs.length > maxChips
+    ? `<span class="cal-event-more">+${evs.length - maxChips}</span>`
+    : "";
+
+  const dots = evs.slice(0, 6).map((e) => {
+    const hex = CAL_COLORS[e.cor]?.hex || "#c9a227";
+    return `<span class="cal-dot" style="background:${hex}" title="${escapeHtml(e.titulo)}"></span>`;
+  }).join("");
+
+  return `<div class="${cls}" data-date="${ymd}" title="${evs.length ? evs.map((e) => e.titulo).join(" · ") : ""}">
+    <span class="cal-day-num">${day}</span>
+    <div class="cal-day-events">${chips}${extra}</div>
+    <div class="cal-dots">${dots}</div>
+  </div>`;
+}
+
+function showDayDetail(ymd) {
+  const box = document.getElementById("cal-day-detail");
+  const title = document.getElementById("cal-day-title");
+  const list = document.getElementById("cal-day-events");
+  if (!box || !title || !list) return;
+
+  const [y, m, d] = ymd.split("-").map(Number);
+  const dateObj = new Date(y, m - 1, d);
+  title.textContent = dateObj.toLocaleDateString("pt-BR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+
+  const evs = eventsOnDate(ymd);
+  const isAdmin = currentUser?.role === "admin";
+
+  if (!evs.length) {
+    list.innerHTML = '<li class="empty-msg" style="padding:4px 0">Nenhum evento neste dia.</li>';
+  } else {
+    list.innerHTML = evs
+      .map((e) => {
+        const hex = CAL_COLORS[e.cor]?.hex || "#c9a227";
+        const corLabel = CAL_COLORS[e.cor]?.label || e.cor;
+        const tipoLabel = CAL_TIPO_LABEL[e.tipo] || e.tipo;
+        const range =
+          e.fim && e.fim !== e.inicio
+            ? `${formatYMD(e.inicio)} → ${formatYMD(e.fim)}`
+            : formatYMD(e.inicio);
+        return `<li class="cal-event-item" style="border-left-color:${hex}">
+          <div class="ev-info">
+            <div class="ev-title">${escapeHtml(e.titulo)}</div>
+            <div class="ev-meta">${tipoLabel} · ${corLabel} · ${range}${e.obs ? " · " + escapeHtml(e.obs) : ""}</div>
+          </div>
+          ${
+            isAdmin
+              ? `<div class="ev-actions">
+                  <button type="button" class="btn btn-outline btn-sm" onclick="editCalEvent('${e.id}')">Editar</button>
+                  <button type="button" class="btn btn-danger btn-sm" onclick="deleteCalEventFromList('${e.id}')">Excluir</button>
+                </div>`
+              : ""
+          }
+        </li>`;
+      })
+      .join("");
+  }
+
+  box.classList.remove("hidden");
+}
+
+function formatYMD(ymd) {
+  if (!ymd || ymd.length < 10) return ymd || "";
+  const [y, m, d] = ymd.split("-");
+  return `${d}/${m}/${y}`;
 }
 
 /* ——— Utils ——— */

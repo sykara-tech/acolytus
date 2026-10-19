@@ -27,6 +27,19 @@ No Firebase Console, em Realtime Database → Regras, use regras que permitam le
 Estrutura:
 - `users` — { nome, nasc (DDMMAAAA), role }
 - `avisos` — { titulo, texto, autor, createdAt }
+- `calendario` — { titulo, tipo, inicio, fim, cor, obs, autor, createdAt }
+  - Tipos: `solenidade` | `festa` | `memoria` | `tempo`
+  - Cores: `branco` | `vermelho` | `verde` | `roxo` | `rosa` | `dourado`
+
+## Calendário litúrgico
+
+Na página **Início**, todos visualizam o calendário mensal com solenidades, festas, memórias e tempos litúrgicos (com legenda de cores).
+
+Administradores podem:
+- **Adicionar evento** (botão no topo do calendário)
+- **Editar / Excluir** no detalhe do dia (ao clicar em uma data)
+
+Eventos de **tempo litúrgico** podem ter data início e data fim (período).
 
 ## Pastas Drive
 
