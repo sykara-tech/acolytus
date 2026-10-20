@@ -1,25 +1,14 @@
 # Acolytus
 
-Pastoral dos Coroinhas, Acólitos e Guardiãs — Capela Nossa Senhora de Nazaré
+Suba estes arquivos na raiz do repositório (sem pastas):
 
-## Como entrar
+- index.html
+- app.js
+- styles.css
+- brasao.png
+- brasao-oficial.png
+- selo.jpg
 
-Abra `index.html`. Use **nome completo** + **data de nascimento**.
+Login admin: GUILHERME PEREIRA BATISTA · 22/07/2009
 
-Admin inicial: GUILHERME PEREIRA BATISTA · 22/07/2009
-
-## Níveis de acesso
-
-| Nível | Acesso |
-|-------|--------|
-| **Administrador** | Tudo |
-| **Coordenador** | Tudo **exceto** usuários e **editar o calendário litúrgico** |
-| **Servo** | Escalas, liturgia, calendário (só ver) e avisos |
-
-## Arquivos
-
-```
-js/config.js · js/utils.js · js/auth.js · js/calendar.js
-js/membros.js · js/relatorios.js · js/avisos.js · js/users.js
-js/print.js · js/main.js
-```
+Níveis: admin (tudo) | coordenador (tudo menos usuários e editar calendário) | servo (escalas, liturgia, calendário ver, avisos)
