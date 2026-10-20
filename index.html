@@ -26,14 +26,17 @@
       <h1>Acolytus</h1>
       <p class="login-sub">Pastoral dos Coroinhas, Acólitos e Guardiãs</p>
       <p class="login-place">Capela Nossa Senhora de Nazaré</p>
-
+      <div class="login-welcome">
+        <p><strong>Seja bem-vindo(a) ao Acolytus.</strong></p>
+        <p>O sistema da Pastoral dos Coroinhas, Acólitos e Guardiãs. Entre com seu nome e a data de nascimento.</p>
+      </div>
       <form id="login-form">
         <div class="form-group">
-          <label for="login-nome">Nome completo</label>
-          <input type="text" id="login-nome" placeholder="Seu nome completo" required autocomplete="name" />
+          <label for="login-nome">Seu nome completo</label>
+          <input type="text" id="login-nome" placeholder="Como está no cadastro" required autocomplete="name" />
         </div>
         <div class="form-group">
-          <label for="login-nasc">Data de nascimento (senha)</label>
+          <label for="login-nasc">Data de nascimento</label>
           <input type="text" id="login-nasc" placeholder="DD/MM/AAAA" required maxlength="10" inputmode="numeric" autocomplete="off" />
         </div>
         <p id="login-error" class="form-error hidden"></p>
@@ -82,6 +85,14 @@
           <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></span>
           Diversos
         </button>
+        <button class="nav-item" data-section="membros">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>
+          Membros
+        </button>
+        <button class="nav-item" data-section="relatorios">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></span>
+          Relatórios
+        </button>
         <button class="nav-item" data-section="avisos">
           <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></span>
           Avisos
@@ -90,10 +101,7 @@
           <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>
           Usuários
         </button>
-        <button class="nav-item" data-section="sobre">
-          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span>
-          Sobre
-        </button>
+
       </nav>
 
       <div class="sidebar-footer">
@@ -114,37 +122,34 @@
 
       <!-- INÍCIO -->
       <section id="section-inicio" class="section active">
+        <div id="welcome-banner" class="welcome-banner anim-fade-up">
+          <p id="welcome-text">Olá! Que bom ter você por aqui.</p>
+        </div>
         <div class="hero anim-fade-up">
           <img src="brasao.png" alt="Brasão" class="hero-brasao" />
           <div class="hero-text">
             <h2>Acolytus</h2>
             <p class="hero-subtitle">Pastoral dos Coroinhas, Acólitos e Guardiãs</p>
             <p class="hero-place">Capela Nossa Senhora de Nazaré</p>
-            <p class="hero-desc">Acesso às escalas, atas, liturgia, finanças e formulário SAL. Use o menu para navegar e enviar arquivos nas pastas do Drive.</p>
+            <p class="hero-desc">Seja bem-vindo(a). Por aqui você vê o calendário, as escalas, a liturgia e os avisos. Use o menu ao lado — é bem direto.</p>
           </div>
         </div>
 
-        <!-- CALENDÁRIO LITÚRGICO -->
         <div class="card calendar-card anim-fade-up" style="--d:0.05s">
           <div class="section-head">
             <h2 class="card-title">Calendário Litúrgico</h2>
-            <button class="btn btn-primary admin-only hidden" id="btn-add-cal-event" type="button">Adicionar evento</button>
+            <button class="btn btn-primary admin-only hidden" id="btn-add-cal-event" type="button">Novo evento</button>
           </div>
-
-          <div id="firebase-status" class="firebase-status hidden" role="status" aria-live="polite"></div>
-
           <div class="cal-toolbar">
             <button type="button" class="btn btn-outline btn-sm" id="cal-prev" aria-label="Mês anterior">‹</button>
             <h3 id="cal-month-label" class="cal-month-label">—</h3>
             <button type="button" class="btn btn-outline btn-sm" id="cal-next" aria-label="Próximo mês">›</button>
             <button type="button" class="btn btn-outline btn-sm" id="cal-today">Hoje</button>
           </div>
-
           <div class="cal-grid-head">
             <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
           </div>
           <div id="cal-grid" class="cal-grid"></div>
-
           <div class="cal-legend">
             <h4>Legenda</h4>
             <div class="cal-legend-items">
@@ -152,8 +157,8 @@
               <span class="cal-leg"><i style="background:#5b8c5a"></i> Festa</span>
               <span class="cal-leg"><i style="background:#6b8cae"></i> Memória</span>
               <span class="cal-leg"><i style="background:#8b6b4a"></i> Comemoração</span>
-              <span class="cal-leg"><i style="background:#3d6b8a"></i> Próprio da comunidade</span>
-              <span class="cal-leg"><i style="background:#7a2a32"></i> Tempo litúrgico</span>
+              <span class="cal-leg"><i style="background:#3d6b8a"></i> Próprio</span>
+              <span class="cal-leg"><i style="background:#7a2a32"></i> Tempo</span>
               <span class="cal-leg"><i style="background:#ffffff;border:1px solid #999"></i> Branco</span>
               <span class="cal-leg"><i style="background:#c41e3a"></i> Vermelho</span>
               <span class="cal-leg"><i style="background:#4a7c59"></i> Verde</span>
@@ -161,7 +166,6 @@
               <span class="cal-leg"><i style="background:#e8a0bf"></i> Rosa</span>
             </div>
           </div>
-
           <div id="cal-day-detail" class="cal-day-detail hidden">
             <h4 id="cal-day-title">—</h4>
             <ul id="cal-day-events"></ul>
@@ -172,46 +176,41 @@
           <button class="card nav-card anim-fade-up" style="--d:0.1s" data-goto="formulario">
             <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span>
             <h3>Formulário SAL</h3>
-            <p>Sistema de Acompanhamento litúrgico</p>
+            <p>Sistema de Acompanhamento Litúrgico</p>
           </button>
           <button class="card nav-card anim-fade-up" style="--d:0.15s" data-goto="escalas">
             <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
             <h3>Escalas</h3>
             <p>Missas e serviços</p>
           </button>
-          <button class="card nav-card anim-fade-up" style="--d:0.2s" data-goto="atas">
+          <button class="card nav-card anim-fade-up" style="--d:0.2s" data-goto="membros">
+            <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
+            <h3>Membros</h3>
+            <p>Pastoral e contatos</p>
+          </button>
+          <button class="card nav-card anim-fade-up" style="--d:0.25s" data-goto="relatorios">
+            <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span>
+            <h3>Relatórios</h3>
+            <p>Por coroinha, com observações</p>
+          </button>
+          <button class="card nav-card anim-fade-up" style="--d:0.3s" data-goto="atas">
             <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span>
             <h3>Atas</h3>
             <p>Reuniões e registros</p>
           </button>
-          <button class="card nav-card anim-fade-up" style="--d:0.25s" data-goto="liturgia">
-            <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></span>
-            <h3>Liturgia</h3>
-            <p>Materiais litúrgicos</p>
-          </button>
-          <button class="card nav-card anim-fade-up" style="--d:0.3s" data-goto="financas">
-            <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
-            <h3>Finanças</h3>
-            <p>Documentos financeiros</p>
-          </button>
-          <button class="card nav-card anim-fade-up" style="--d:0.35s" data-goto="diversos">
-            <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></span>
-            <h3>Diversos</h3>
-            <p>Outros documentos</p>
-          </button>
-          <button class="card nav-card anim-fade-up" style="--d:0.4s" data-goto="avisos">
+          <button class="card nav-card anim-fade-up" style="--d:0.35s" data-goto="avisos">
             <span class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></span>
             <h3>Avisos</h3>
             <p>Comunicados da pastoral</p>
           </button>
         </div>
 
-        <div class="card verse-card anim-fade-up" style="--d:0.45s">
+        <div class="card verse-card anim-fade-up" style="--d:0.4s">
           <blockquote>“Servi ao Senhor com alegria; apresentai-vos a ele com cânticos.”</blockquote>
           <cite>— Salmo 100,2</cite>
         </div>
 
-        <!-- Modal calendário (admin) -->
+        <!-- Modal calendário -->
         <div id="modal-cal" class="modal hidden">
           <div class="modal-content">
             <h3 id="modal-cal-title">Adicionar evento</h3>
@@ -267,24 +266,23 @@
         </div>
       </section>
 
-      <!-- FORMULÁRIO -->
+      <!-- FORMULÁRIO SAL -->
       <section id="section-formulario" class="section">
         <div class="card">
           <div class="section-head">
             <h2 class="card-title">Formulário — Sistema SAL</h2>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSdcS_OiMatX253AoNdH25rn90zEC6AgXo_xWtF5tfSQp8Z3rA/viewform" target="_blank" rel="noopener" class="btn btn-gold">
               Abrir em nova aba
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
             </a>
           </div>
-          <p class="card-text">Formulário oficial do Sistema de Acompanhamento Litúrgico.</p>
+          <p class="card-text">Formulário de acompanhamento litúrgico. Pode preencher aqui ou abrir em outra aba.</p>
           <div class="iframe-container">
             <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdcS_OiMatX253AoNdH25rn90zEC6AgXo_xWtF5tfSQp8Z3rA/viewform?embedded=true" loading="lazy"></iframe>
           </div>
         </div>
       </section>
 
-      <!-- DRIVE SECTIONS (template reused via JS structure in HTML) -->
+      <!-- DRIVE SECTIONS -->
       <section id="section-escalas" class="section">
         <div class="card">
           <div class="section-head">
@@ -294,7 +292,7 @@
               <a href="https://drive.google.com/drive/folders/1dbG79HDgWO9HQArJm9x0WYyROJjI28eB?usp=sharing" target="_blank" rel="noopener" class="btn btn-primary">Enviar arquivo</a>
             </div>
           </div>
-          <p class="card-text">Escalas de missas e serviços. Para enviar um arquivo, clique em <strong>Enviar arquivo</strong> — a pasta abre no Google Drive; use o botão Novo / Enviar arquivo.</p>
+          <p class="card-text">Quem serve em cada missa e serviço. Para enviar um arquivo, use o botão <strong>Enviar arquivo</strong>.</p>
           <div class="iframe-container">
             <iframe src="https://drive.google.com/embeddedfolderview?id=1dbG79HDgWO9HQArJm9x0WYyROJjI28eB#list" loading="lazy"></iframe>
           </div>
@@ -310,7 +308,7 @@
               <a href="https://drive.google.com/drive/folders/1eoWwa8vbEi_W73DQWJnuHE_p-H67UMiG?usp=sharing" target="_blank" rel="noopener" class="btn btn-primary">Enviar arquivo</a>
             </div>
           </div>
-          <p class="card-text">Atas de reuniões e registros. Clique em <strong>Enviar arquivo</strong> para abrir a pasta e fazer upload no Drive.</p>
+          <p class="card-text">Registros das reuniões da pastoral.</p>
           <div class="iframe-container">
             <iframe src="https://drive.google.com/embeddedfolderview?id=1eoWwa8vbEi_W73DQWJnuHE_p-H67UMiG#list" loading="lazy"></iframe>
           </div>
@@ -326,7 +324,7 @@
               <a href="https://drive.google.com/drive/folders/1HFrpi9Bg6qnkqH7BlhVFPAn1XiitIFAd?usp=sharing" target="_blank" rel="noopener" class="btn btn-primary">Enviar arquivo</a>
             </div>
           </div>
-          <p class="card-text">Roteiros, orações e materiais litúrgicos. Use <strong>Enviar arquivo</strong> para adicionar documentos na pasta do Drive.</p>
+          <p class="card-text">Roteiros, orações e materiais para o altar.</p>
           <div class="iframe-container">
             <iframe src="https://drive.google.com/embeddedfolderview?id=1HFrpi9Bg6qnkqH7BlhVFPAn1XiitIFAd#list" loading="lazy"></iframe>
           </div>
@@ -342,7 +340,7 @@
               <a href="https://drive.google.com/drive/folders/12tcXoVjEJGpfQdFx1MSCf22iYRvjnAO8?usp=sharing" target="_blank" rel="noopener" class="btn btn-primary">Enviar arquivo</a>
             </div>
           </div>
-          <p class="card-text">Documentos financeiros da pastoral. Clique em <strong>Enviar arquivo</strong> para subir arquivos na pasta.</p>
+          <p class="card-text">Documentos de finanças da pastoral.</p>
           <div class="iframe-container">
             <iframe src="https://drive.google.com/embeddedfolderview?id=12tcXoVjEJGpfQdFx1MSCf22iYRvjnAO8#list" loading="lazy"></iframe>
           </div>
@@ -358,9 +356,217 @@
               <a href="https://drive.google.com/drive/folders/1cMursyqNT07kgE_5ehlUlB_dbk5V4N1M?usp=sharing" target="_blank" rel="noopener" class="btn btn-primary">Enviar arquivo</a>
             </div>
           </div>
-          <p class="card-text">Outros arquivos e documentos. Use <strong>Enviar arquivo</strong> para adicionar itens na pasta do Drive.</p>
+          <p class="card-text">Outros arquivos que não entram nas pastas acima.</p>
           <div class="iframe-container">
             <iframe src="https://drive.google.com/embeddedfolderview?id=1cMursyqNT07kgE_5ehlUlB_dbk5V4N1M#list" loading="lazy"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <!-- MEMBROS DA PASTORAL -->
+      <section id="section-membros" class="section">
+        <!-- Lista -->
+        <div id="membros-list-view">
+          <div class="card">
+            <div class="section-head">
+              <h2 class="card-title">Membros da Pastoral</h2>
+              <div class="head-actions">
+                <button class="btn btn-outline" id="btn-print-membros" type="button">Imprimir lista</button>
+                <button class="btn btn-primary coord-up hidden" id="btn-add-membro" type="button">Novo membro</button>
+              </div>
+            </div>
+            <p class="card-text">Toque no nome para abrir o perfil do coroinha: dados, observações e relatórios. Tudo fica salvo para a equipe acompanhar.</p>
+            <div class="filter-bar">
+              <input type="search" id="membro-search" placeholder="Buscar por nome ou função..." class="search-input" />
+              <select id="membro-filter-funcao">
+                <option value="">Todas as funções</option>
+                <option value="Coroinha">Coroinha</option>
+                <option value="Acólito">Acólito</option>
+                <option value="Guardiã">Guardiã</option>
+                <option value="Coordenador">Coordenador</option>
+                <option value="Assessor">Assessor</option>
+                <option value="Outro">Outro</option>
+              </select>
+              <select id="membro-filter-status">
+                <option value="">Todos</option>
+                <option value="ativo">Ativos</option>
+                <option value="inativo">Inativos</option>
+              </select>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table" id="membros-table">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Função</th>
+                    <th>Telefone</th>
+                    <th>Relatórios</th>
+                    <th>Status</th>
+                    <th class="coord-up hidden">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="membros-tbody">
+                  <tr><td colspan="6" class="empty-msg">Carregando...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Perfil do membro -->
+        <div id="membro-perfil-view" class="hidden">
+          <div class="card">
+            <div class="section-head">
+              <button type="button" class="btn btn-outline btn-sm" id="btn-voltar-membros">← Voltar à lista</button>
+              <div class="head-actions">
+                <button class="btn btn-outline btn-sm coord-up hidden" id="btn-edit-membro-perfil" type="button">Editar dados</button>
+                <button class="btn btn-primary" id="btn-add-relatorio-perfil" type="button">Novo relatório</button>
+              </div>
+            </div>
+            <div class="perfil-header">
+              <div class="perfil-avatar" id="perfil-avatar">C</div>
+              <div class="perfil-info">
+                <h2 class="card-title" id="perfil-nome">—</h2>
+                <p id="perfil-meta" class="perfil-meta">—</p>
+                <p id="perfil-contato" class="perfil-contato"></p>
+              </div>
+            </div>
+            <div class="perfil-obs-box" id="perfil-obs-box">
+              <h3>Observações gerais</h3>
+              <p id="perfil-obs-texto" class="perfil-obs-texto">Nenhuma observação.</p>
+              <button type="button" class="btn btn-outline btn-sm coord-up hidden" id="btn-edit-obs-geral">Editar observação</button>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:16px">
+            <div class="section-head">
+              <h2 class="card-title">Relatórios deste membro</h2>
+            </div>
+            <div id="perfil-relatorios-list" class="relatorios-list">
+              <p class="empty-msg">Nenhum relatório ainda.</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="modal-membro" class="modal hidden">
+          <div class="modal-content modal-lg">
+            <h3 id="modal-membro-title">Novo membro</h3>
+            <form id="form-membro">
+              <input type="hidden" id="membro-id" />
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="membro-nome">Nome completo *</label>
+                  <input type="text" id="membro-nome" required />
+                </div>
+                <div class="form-group">
+                  <label for="membro-funcao">Função *</label>
+                  <select id="membro-funcao" required>
+                    <option value="Coroinha">Coroinha</option>
+                    <option value="Acólito">Acólito</option>
+                    <option value="Guardiã">Guardiã</option>
+                    <option value="Coordenador">Coordenador</option>
+                    <option value="Assessor">Assessor</option>
+                    <option value="Outro">Outro</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="membro-nasc">Data de nascimento</label>
+                  <input type="text" id="membro-nasc" placeholder="DD/MM/AAAA" maxlength="10" />
+                </div>
+                <div class="form-group">
+                  <label for="membro-telefone">Telefone / WhatsApp</label>
+                  <input type="text" id="membro-telefone" placeholder="(00) 00000-0000" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="membro-email">E-mail</label>
+                  <input type="email" id="membro-email" placeholder="email@exemplo.com" />
+                </div>
+                <div class="form-group">
+                  <label for="membro-status">Status</label>
+                  <select id="membro-status">
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="membro-obs">Observações gerais</label>
+                <textarea id="membro-obs" rows="3" placeholder="Observações sobre o membro..."></textarea>
+              </div>
+              <div class="modal-actions">
+                <button type="button" class="btn btn-outline" id="btn-cancel-membro">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- RELATÓRIOS (todos + formulário) -->
+      <section id="section-relatorios" class="section">
+        <div class="card">
+          <div class="section-head">
+            <h2 class="card-title">Relatórios dos Coroinhas</h2>
+            <button class="btn btn-primary" id="btn-add-relatorio" type="button">Novo relatório</button>
+          </div>
+          <p class="card-text">Aqui ficam os acompanhamentos de cada coroinha. Você escreve, salva e, se quiser, imprime no modelo oficial da pastoral.</p>
+          <div class="filter-bar">
+            <input type="search" id="relatorio-search" placeholder="Buscar por título ou membro..." class="search-input" />
+            <select id="relatorio-filter-membro">
+              <option value="">Todos os membros</option>
+            </select>
+          </div>
+          <div id="relatorios-list" class="relatorios-list">
+            <p class="empty-msg">Carregando...</p>
+          </div>
+        </div>
+
+        <div id="modal-relatorio" class="modal hidden">
+          <div class="modal-content modal-lg">
+            <h3 id="modal-relatorio-title">Novo relatório</h3>
+            <form id="form-relatorio">
+              <input type="hidden" id="relatorio-id" />
+              <div class="form-group">
+                <label for="relatorio-membro">Membro (coroinha) *</label>
+                <select id="relatorio-membro" required>
+                  <option value="">Selecione o membro...</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="relatorio-titulo">Título *</label>
+                <input type="text" id="relatorio-titulo" required placeholder="Ex.: ACOMPANHAMENTO — OUTUBRO 2026" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="relatorio-tipo">Tipo</label>
+                  <select id="relatorio-tipo">
+                    <option value="Acompanhamento">Acompanhamento</option>
+                    <option value="Observação">Observação</option>
+                    <option value="Mensal">Mensal</option>
+                    <option value="Evento">Evento / Missa</option>
+                    <option value="Advertência">Advertência</option>
+                    <option value="Elogio">Elogio</option>
+                    <option value="Outro">Outro</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="relatorio-data">Data</label>
+                  <input type="date" id="relatorio-data" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="relatorio-conteudo">Observações / conteúdo *</label>
+                <textarea id="relatorio-conteudo" rows="8" required placeholder="Escreva as observações sobre o coroinha..."></textarea>
+              </div>
+              <div class="modal-actions">
+                <button type="button" class="btn btn-outline" id="btn-cancel-relatorio">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar relatório</button>
+              </div>
+            </form>
           </div>
         </div>
       </section>
@@ -370,13 +576,12 @@
         <div class="card">
           <div class="section-head">
             <h2 class="card-title">Avisos e Comunicados</h2>
-            <button class="btn btn-primary admin-only hidden" id="btn-add-aviso">Novo aviso</button>
+            <button class="btn btn-primary coord-up hidden" id="btn-add-aviso" type="button">Novo aviso</button>
           </div>
           <div id="avisos-list" class="avisos-list">
             <p class="empty-msg">Carregando avisos...</p>
           </div>
         </div>
-
         <div id="modal-aviso" class="modal hidden">
           <div class="modal-content">
             <h3>Novo aviso</h3>
@@ -398,21 +603,21 @@
         </div>
       </section>
 
-      <!-- USUÁRIOS (admin) -->
+      <!-- USUÁRIOS -->
       <section id="section-usuarios" class="section">
         <div class="card">
           <div class="section-head">
-            <h2 class="card-title">Usuários</h2>
-            <button class="btn btn-primary" id="btn-add-user">Criar usuário</button>
+            <h2 class="card-title">Quem pode entrar</h2>
+            <button class="btn btn-primary" id="btn-add-user" type="button">Nova pessoa</button>
           </div>
-          <p class="card-text">A senha de cada usuário é a <strong>data de nascimento</strong> no formato DD/MM/AAAA.</p>
+          <p class="card-text">Cada pessoa entra com o nome e a data de nascimento (formato DD/MM/AAAA). Escolha o nível de acesso com cuidado.</p>
           <div class="table-wrap">
             <table class="data-table">
               <thead>
                 <tr>
                   <th>Nome</th>
                   <th>Data de nascimento</th>
-                  <th>Tipo</th>
+                  <th>Nível</th>
                   <th>Ações</th>
                 </tr>
               </thead>
@@ -420,10 +625,9 @@
             </table>
           </div>
         </div>
-
         <div id="modal-user" class="modal hidden">
           <div class="modal-content">
-            <h3 id="modal-user-title">Criar usuário</h3>
+            <h3 id="modal-user-title">Nova pessoa</h3>
             <form id="form-user">
               <input type="hidden" id="user-id" />
               <div class="form-group">
@@ -435,10 +639,11 @@
                 <input type="text" id="user-nasc" required placeholder="DD/MM/AAAA" maxlength="10" />
               </div>
               <div class="form-group">
-                <label for="user-role">Tipo</label>
+                <label for="user-role">Nível de acesso</label>
                 <select id="user-role">
-                  <option value="membro">Membro</option>
-                  <option value="admin">Administrador</option>
+                  <option value="servo">Servo — só escalas, liturgia, calendário e avisos</option>
+                  <option value="coordenador">Coordenador — quase tudo (sem usuários nem calendário)</option>
+                  <option value="admin">Administrador — acesso total</option>
                 </select>
               </div>
               <div class="modal-actions">
@@ -449,44 +654,36 @@
           </div>
         </div>
       </section>
-<!-- SOBRE -->
-<section id="section-sobre" class="section">
-  <div class="card sobre-card">
-    <img src="brasao.png" alt="Brasão" class="sobre-brasao" />
-    <h2 class="card-title">Sobre o Acolytus</h2>
-    
-    <p class="card-text">
-      Sistema da <strong>Pastoral dos Coroinhas, Acólitos e Guardiãs</strong> da Capela Nossa Senhora de Nazaré.
-    </p>
-    
-    <p class="card-text">
-      Acesso ao formulário SAL, pastas do Google Drive e avisos. 
-      O login usa o nome completo e a data de nascimento como senha.
-    </p>
-    
-    <div class="sobre-info">
-      <div><center>
-        <blockquote class="sobre-verse">
-          “Eu sou o servo do Senhor; faça-se em mim segundo a vossa palavra.”
-          <cite>— Lc 1,38</cite>
-          </center>
-        </blockquote>
+
+  <!-- ÁREA DE IMPRESSÃO (modelo oficial) -->
+  <div id="print-area" class="print-area" aria-hidden="true">
+    <div class="print-header">
+      <img src="brasao-oficial.png" alt="" class="print-brasao" />
+      <div class="print-header-text">
+        <p class="print-paroquia">PARÓQUIA SÃO MAXIMILIANO MARIA KOLBE</p>
+        <p class="print-pastoral">PASTORAL DOS COROINHAS, ACÓLITOS E GUARDIÃS</p>
+        <p class="print-capela">CAPELA NOSSA SENHORA DE NAZARÉ</p>
       </div>
+      <img src="selo.jpg" alt="" class="print-selo" />
     </div>
-
-    <!-- Link de créditos estilizado e centralizado abaixo das informações -->
-    <div style="text-align: center; margin-top: 25px;">
-      <a href="https://sykara-tech.github.io/home/" target="_blank" rel="noopener noreferrer" style="color: #737373; text-decoration: none; font-size: 13px; font-family: sans-serif;">
-        Desenvolvido por SyKaraTECH™
-      </a>
+    <hr class="print-line" />
+    <div id="print-body" class="print-body"></div>
+    <div class="print-footer">
+      <p>Documento gerado pelo sistema Acolytus</p>
     </div>
   </div>
-</section>
 
-      </section>
-    </main>
-  </div>
+  
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/membros.js"></script>
+  <script src="js/relatorios.js"></script>
+  <script src="js/avisos.js"></script>
+  <script src="js/users.js"></script>
+  <script src="js/print.js"></script>
+  <script src="js/main.js"></script>
 
-  <script src="app.js"></script>
 </body>
 </html>

@@ -903,3 +903,342 @@ button:disabled { opacity: .65; cursor: wait; }
   .cal-event-chip { font-size: .55rem; }
   .cal-grid, .cal-grid-head { gap: 2px; }
 }
+
+/* ——— Membros & Relatórios ——— */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.search-input {
+  flex: 1;
+  min-width: 180px;
+  padding: 10px 14px;
+  border: 1px solid var(--border, #514047);
+  border-radius: 8px;
+  background: var(--bg-input, #2a2226);
+  color: var(--text, #f5f0e6);
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+.filter-bar select {
+  padding: 10px 12px;
+  border: 1px solid var(--border, #514047);
+  border-radius: 8px;
+  background: var(--bg-input, #2a2226);
+  color: var(--text, #f5f0e6);
+  font-family: inherit;
+}
+.modal-lg { max-width: 640px; }
+.relatorios-list { display: flex; flex-direction: column; gap: 12px; }
+.relatorio-item {
+  border: 1px solid var(--border, #514047);
+  border-radius: 10px;
+  padding: 16px 18px;
+  background: rgba(255,255,255,0.03);
+}
+.relatorio-item h4 {
+  margin: 0 0 6px;
+  font-family: "Cinzel", serif;
+  font-size: 1.05rem;
+  color: var(--gold, #c9a227);
+}
+.relatorio-item .rel-meta {
+  font-size: 0.85rem;
+  color: var(--text-muted, #a89b9e);
+  margin-bottom: 10px;
+}
+.relatorio-item .rel-preview {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--text, #f5f0e6);
+  max-height: 4.5em;
+  overflow: hidden;
+  margin-bottom: 12px;
+  white-space: pre-wrap;
+}
+.relatorio-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.status-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.status-badge.ativo { background: rgba(74,155,105,0.25); color: #6dca8f; }
+.status-badge.inativo { background: rgba(201,75,85,0.2); color: #e08a90; }
+.sobre-credits {
+  text-align: center;
+  margin-top: 25px;
+}
+.sobre-credits a {
+  color: #737373;
+  text-decoration: none;
+  font-size: 13px;
+}
+.sobre-verse {
+  text-align: center;
+  font-style: italic;
+  margin: 20px 0;
+}
+.sobre-verse cite {
+  display: block;
+  margin-top: 8px;
+  font-style: normal;
+  font-size: 0.9rem;
+  color: var(--text-muted, #a89b9e);
+}
+
+/* ——— Impressão (modelo oficial) ——— */
+.print-area {
+  display: none;
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  width: 210mm;
+  padding: 15mm 18mm;
+  background: #fff;
+  color: #111;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12pt;
+  line-height: 1.5;
+}
+.print-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.print-brasao {
+  width: 70px;
+  height: auto;
+  object-fit: contain;
+}
+.print-selo {
+  width: 58px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 50%;
+}
+.print-header-text {
+  flex: 1;
+  text-align: center;
+}
+.print-paroquia {
+  margin: 0;
+  font-size: 11pt;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.print-pastoral {
+  margin: 2px 0;
+  font-size: 10pt;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.print-capela {
+  margin: 0;
+  font-size: 9.5pt;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.print-line {
+  border: none;
+  border-top: 2px solid #1a1a1a;
+  margin: 8px 0 16px;
+}
+.print-body h1 {
+  font-size: 14pt;
+  text-align: center;
+  margin: 0 0 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.print-body h2 {
+  font-size: 12pt;
+  margin: 16px 0 8px;
+}
+.print-body p {
+  margin: 0 0 10px;
+  text-align: justify;
+}
+.print-body .print-meta {
+  text-align: center;
+  font-size: 10pt;
+  margin-bottom: 18px;
+  color: #333;
+}
+.print-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 10.5pt;
+}
+.print-body th,
+.print-body td {
+  border: 1px solid #333;
+  padding: 6px 8px;
+  text-align: left;
+}
+.print-body th {
+  background: #eee;
+  font-weight: 700;
+}
+.print-footer {
+  margin-top: 28px;
+  padding-top: 10px;
+  border-top: 1px solid #999;
+  font-size: 9pt;
+  color: #555;
+  text-align: center;
+}
+.print-signature {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-around;
+  gap: 40px;
+}
+.print-signature div {
+  text-align: center;
+  min-width: 180px;
+}
+.print-signature .line {
+  border-top: 1px solid #111;
+  margin-bottom: 6px;
+  padding-top: 4px;
+}
+
+@media print {
+  body * { visibility: hidden !important; }
+  .print-area,
+  .print-area * { visibility: visible !important; }
+  .print-area {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    padding: 12mm 15mm !important;
+    margin: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+}
+
+/* Perfil do membro */
+.perfil-header {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin: 12px 0 20px;
+}
+.perfil-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c9a227, #8b6b1a);
+  color: #1a1214;
+  font-family: "Cinzel", serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.perfil-info { flex: 1; min-width: 0; }
+.perfil-meta {
+  margin: 4px 0;
+  color: var(--text-muted, #a89b9e);
+  font-size: 0.95rem;
+}
+.perfil-contato {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text, #f5f0e6);
+}
+.perfil-obs-box {
+  margin-top: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--border, #514047);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+}
+.perfil-obs-box h3 {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  color: var(--gold, #c9a227);
+  font-family: "Cinzel", serif;
+}
+.perfil-obs-texto {
+  margin: 0 0 10px;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+.link-nome {
+  background: none;
+  border: none;
+  color: var(--gold, #c9a227);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.link-nome:hover { opacity: 0.85; }
+.rel-count {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(201,162,39,0.2);
+  color: var(--gold, #c9a227);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: center;
+}
+.membro-row:hover td { background: rgba(255,255,255,0.03); }
+
+
+/* Boas-vindas */
+.welcome-banner {
+  margin: 0 0 16px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--border, #514047);
+  border-left: 4px solid var(--gold, #c9a227);
+  background: rgba(201, 162, 39, 0.08);
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+.welcome-banner p { margin: 0; }
+.login-welcome {
+  text-align: left;
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border, #514047);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--text, #f5f0e6);
+}
+.login-welcome p { margin: 0 0 8px; }
+.login-welcome p:last-child { margin-bottom: 0; }
+.login-hint {
+  color: var(--text-muted, #a89b9e);
+  font-size: 0.85rem !important;
+}
